@@ -1,0 +1,16 @@
+{
+  "name": "sunrise-sunset.org",
+  "version": "1.0.0",
+  "description": "Library for sunrise-sunset.org's API",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [
+    "sunrise-sunset.org",
+    "sunrise-sunset",
+    "sunrise",
+    "sunset",
+    "API"
+  ],
+  "author": "Space.yg",
+  "license": "MIT"
+}
