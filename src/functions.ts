@@ -1,5 +1,6 @@
 /**
  * Here are some useful functions.
+ * @since v1.0.0
  */
 
 import type SunriseSunset from "./types"
@@ -8,8 +9,13 @@ import type SunriseSunset from "./types"
  * Get raw sunrise sunset data
  * @param parameters Parameter options
  * @returns Raw sunrise sunset data
+ * @since v1.0.0
  */
-export async function getSunriseSunset<Formatted extends boolean = true>(parameters: SunriseSunset.APIParameters & { formatted?: Formatted | boolean }): Promise<Formatted extends false ? SunriseSunset.APIResponseNotFormatted : SunriseSunset.APIResponseFormatted>
+export async function getSunriseSunset<Formatted extends boolean = true>(
+	parameters: SunriseSunset.APIParameters & {
+		formatted?: Formatted | boolean
+	},
+): Promise<SunriseSunset.APIResponseFormatted<Formatted>>
 /**
  * Get raw sunrise sunset data
  * @param latitude Latitude in decimal degrees.
@@ -25,8 +31,16 @@ export async function getSunriseSunset<Formatted extends boolean = true>(paramet
  * 
  * Unless you provide a `tzid`, all times are in [UTC](https://en.wikipedia.org/wiki/Coordinated_Universal_Time) and summer time adjustments are not included in the returned data.
  * @returns Raw sunrise sunset data
+ * @since v1.0.0
  */
-export async function getSunriseSunset<Formatted extends boolean = true>(latitude: number, longitude: number, date?: string, callback?: string, formatted?: Formatted | boolean, tzid?: string): Promise<Formatted extends false ? SunriseSunset.APIResponseNotFormatted : SunriseSunset.APIResponseFormatted>
+export async function getSunriseSunset<Formatted extends boolean = true>(
+	latitude: number,
+	longitude: number,
+	date?: string | Date,
+	callback?: string,
+	formatted?: Formatted | boolean,
+	tzid?: string,
+): Promise<SunriseSunset.APIResponseFormatted<Formatted>>
 /**
  * Get raw sunrise sunset data
  * @param latitudeOrParameters Latitude in decimal degrees OR Parameter options.
@@ -42,12 +56,20 @@ export async function getSunriseSunset<Formatted extends boolean = true>(latitud
  * 
  * Unless you provide a `tzid`, all times are in [UTC](https://en.wikipedia.org/wiki/Coordinated_Universal_Time) and summer time adjustments are not included in the returned data.
  * @returns Raw sunrise sunset data
+ * @since v1.0.0
  */
-export async function getSunriseSunset(latitudeOrParameters: number | SunriseSunset.APIParameters, longitude?: number, date?: string, callback?: string, formatted?: boolean, tzid?: string) {
+export async function getSunriseSunset(
+	latitudeOrParameters: number | SunriseSunset.APIParameters,
+	longitude?: number,
+	date?: string | Date,
+	callback?: string,
+	formatted?: boolean,
+	tzid?: string,
+) {
 	// Parameters
 	if (typeof latitudeOrParameters === "object") {
 		var request = `https://api.sunrise-sunset.org/json?lat=${latitudeOrParameters.latitude}&lng=${latitudeOrParameters.longitude}`
-		if (typeof latitudeOrParameters.date !== "undefined") request += `&date=${latitudeOrParameters.date}`
+		if (typeof latitudeOrParameters.date !== "undefined") request += `&date=${latitudeOrParameters.date instanceof Date ? latitudeOrParameters.date.toISOString() : latitudeOrParameters.date}`
 		if (typeof latitudeOrParameters.callback !== "undefined") request += `&callback=${latitudeOrParameters.callback}`
 		if (typeof latitudeOrParameters.formatted !== "undefined") request += `&formatted=${latitudeOrParameters.formatted ? 1 : 0}`
 		if (typeof latitudeOrParameters.tzid !== "undefined") request += `&tzid=${latitudeOrParameters.tzid}`
@@ -56,7 +78,7 @@ export async function getSunriseSunset(latitudeOrParameters: number | SunriseSun
 	// Number
 	else {
 		var request = `https://api.sunrise-sunset.org/json?lat=${latitudeOrParameters}&lng=${longitude}`
-		if (typeof date !== "undefined") request += `&date=${date}`
+		if (typeof date !== "undefined") request += `&date=${date instanceof Date ? date.toISOString() : date}`
 		if (typeof callback !== "undefined") request += `&callback=${callback}`
 		if (typeof formatted !== "undefined") request += `&formatted=${formatted ? 1 : 0}`
 		if (typeof tzid !== "undefined") request += `&tzid=${tzid}`
