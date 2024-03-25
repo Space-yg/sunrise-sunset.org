@@ -2,7 +2,7 @@ export async function getSunriseSunset(latitudeOrParameters, longitude, date, ca
     if (typeof latitudeOrParameters === "object") {
         var request = `https://api.sunrise-sunset.org/json?lat=${latitudeOrParameters.latitude}&lng=${latitudeOrParameters.longitude}`;
         if (typeof latitudeOrParameters.date !== "undefined")
-            request += `&date=${latitudeOrParameters.date}`;
+            request += `&date=${latitudeOrParameters.date instanceof Date ? latitudeOrParameters.date.toISOString() : latitudeOrParameters.date}`;
         if (typeof latitudeOrParameters.callback !== "undefined")
             request += `&callback=${latitudeOrParameters.callback}`;
         if (typeof latitudeOrParameters.formatted !== "undefined")
@@ -14,7 +14,7 @@ export async function getSunriseSunset(latitudeOrParameters, longitude, date, ca
     else {
         var request = `https://api.sunrise-sunset.org/json?lat=${latitudeOrParameters}&lng=${longitude}`;
         if (typeof date !== "undefined")
-            request += `&date=${date}`;
+            request += `&date=${date instanceof Date ? date.toISOString() : date}`;
         if (typeof callback !== "undefined")
             request += `&callback=${callback}`;
         if (typeof formatted !== "undefined")

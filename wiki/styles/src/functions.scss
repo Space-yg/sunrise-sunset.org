@@ -1,0 +1,71 @@
+@use "sass:string";
+
+//// Separate compatibility
+// Webkit
+@function separate-webkit($args...) {
+	$webkit: unquote("");
+
+	// For every argument
+	@each $arg in $args {
+		// Webkit
+		@if (
+			not string.index(#{$arg}, "-moz-") and
+			not string.index(#{$arg}, "-ms-") and
+			not string.index(#{$arg}, "-o-")
+		) {
+			$webkit: $webkit + $arg + ", ";
+		}
+	}
+	@return string.slice($webkit, 0, -3);
+}
+// Moz
+@function separate-moz($args...) {
+	$moz: unquote("");
+
+	// For every argument
+	@each $arg in $args {
+		// Moz
+		@if (
+			not string.index(#{$arg}, "-webkit-") and
+			not string.index(#{$arg}, "-ms-") and
+			not string.index(#{$arg}, "-o-")
+		) {
+			$moz: $moz + $arg + ", ";
+		}
+	}
+	@return string.slice($moz, 0, -3);
+}
+// Ms
+@function separate-ms($args...) {
+	$ms: unquote("");
+
+	// For every argument
+	@each $arg in $args {
+		// Ms
+		@if (
+			not string.index(#{$arg}, "-webkit-") and
+			not string.index(#{$arg}, "-moz-") and
+			not string.index(#{$arg}, "-o-")
+		) {
+			$ms: $ms + $arg + ", ";
+		}
+	}
+	@return string.slice($ms, 0, -3);
+}
+// O
+@function separate-o($args...) {
+	$o: unquote("");
+
+	// For every argument
+	@each $arg in $args {
+		// O
+		@if (
+			not string.index(#{$arg}, "-webkit-") and
+			not string.index(#{$arg}, "-moz-") and
+			not string.index(#{$arg}, "-ms-")
+		) {
+			$o: $o + $arg + ", ";
+		}
+	}
+	@return string.slice($o, 0, -3);
+}

@@ -1,0 +1,42 @@
+@use "./functions.scss" as fn;
+
+//// Transition
+// Adds compatibility to transition
+@mixin transition($args...) {
+	-webkit-transition: fn.separate-webkit($args...);
+	-moz-transition: fn.separate-moz($args...);
+	-o-transition: fn.separate-o($args...);
+	transition: $args;
+}
+// Adds compatibility to transition-property
+@mixin transition-property($args...) {
+	-webkit-transition-property: fn.separate-webkit($args...);
+	-moz-transition-property: fn.separate-moz($args...);
+	-o-transition-property: fn.separate-o($args...);
+	transition-property: $args;
+}
+// Adds compatibility to transition-duration
+@mixin transition-duration($args...) {
+	-webkit-transition-duration: fn.separate-webkit($args...);
+	-moz-transition-duration: fn.separate-moz($args...);
+	-o-transition-duration: fn.separate-o($args...);
+	transition-duration: $args;
+}
+
+//// Transform
+// Adds compatibility to transform
+@mixin transform($args...) {
+	-webkit-transform: fn.separate-webkit($args...);
+	-moz-transform: fn.separate-moz($args...);
+	-ms-transform: fn.separate-ms($args...);
+	-o-transform: fn.separate-o($args...);
+	transform: $args;
+}
+// Adds compatibility to transform-origin
+@mixin transform-origin($args...) {
+	-webkit-transform-origin: fn.separate-webkit($args...);
+	-moz-transform-origin: fn.separate-moz($args...);
+	-ms-transform-origin: fn.separate-ms($args...);
+	-o-transform-origin: fn.separate-o($args...);
+	transform-origin: $args;
+}

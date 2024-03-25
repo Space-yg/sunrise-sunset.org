@@ -1,0 +1,177 @@
+@use "./nav.scss";
+@use "./vars.scss";
+@use "./mixins.scss";
+
+// Aside menu
+$aside-width: 25em;
+aside {
+	position: fixed;
+	width: min(90%, $aside-width);
+	min-height: 100dvh;
+	right: 0;
+	top: 0;
+	background-color: lightgray;
+	padding-top: nav.$nav-height;
+	z-index: 2;
+
+	// Transform
+	@include mixins.transform(translateX(100%));
+
+	// Transition
+	@include mixins.transition-duration(nav.$transition-duration);
+	@include mixins.transition-property(vars.$transform-sep...);
+
+	ul {
+		padding-left: .5em;
+		list-style-type: none;
+		margin-top: 0;
+
+		> li {
+			margin-top: .5em;
+		}
+	}
+
+	// Details that open in the menu
+	details {
+		border: 1px solid black;
+		border-radius: .5em;
+		padding: 0 .5em;
+		margin-bottom: .5em;
+
+		// The name displayed
+		> summary {
+			$transition-duration: .3s;
+			list-style-type: none;
+			position: relative;
+			padding: .5em 0;
+			cursor: pointer;
+
+			// Arrow
+			&::after {
+				content: "";
+				position: absolute;
+				right: .2em;
+				top: calc(50% - .3em);
+				width: .5em;
+				height: .5em;
+				border-bottom: .2em solid black;
+				border-right: .2em solid black;
+				@include mixins.transform(rotate(-45deg));
+				@include mixins.transition-property(right, top, vars.$transform-sep...);
+				@include mixins.transition-duration($transition-duration);
+			}
+			
+			// For smooth transition
+			//! Do not change
+			+ div {
+				display: grid;
+				grid-template-rows: 0fr;
+				@include mixins.transition(grid-template-rows $transition-duration);
+		
+				> div {
+					overflow: hidden;
+				}
+			}
+		}
+
+		// When details is open
+		&.open > summary {
+			// Arrow
+			&::after {
+				right: .1em;
+				top: calc(50% - .5em);
+				@include mixins.transform(rotate(45deg));
+			}
+
+			//! Do not change
+			+ div {
+				grid-template-rows: 1fr;
+			}
+		}
+	}
+	// First detail
+	> details {
+		width: 80%;
+		margin: auto;
+	}
+}
+
+// Wide screens
+@media (width > 1400px) {
+	// Make aside and article next to each other
+	main {
+		display: flex;
+		gap: 3em;
+		align-items: flex-start;
+		width: 70em !important;
+		padding-right: 10em;
+	}
+	// Make aside sticky
+	aside {
+		position: -webkit-sticky;
+		position: sticky;
+		width: min-content;
+		min-height: min-content;
+		flex-basis: $aside-width;
+		padding-top: 1.5em;
+		background-color: transparent;
+		@include mixins.transition(none);
+		@include mixins.transform(translateX(0));
+		z-index: 0;
+
+		// First detail
+		> details {
+			width: 100%;
+			margin: 0;
+		}
+	}
+	article {
+		width: 100%;
+	}
+	// Remove hamburger
+	label.hamburger {
+		display: none;
+	}
+}
+
+label.hamburger {
+	// When hamburger is checked
+	&:has(> input:checked) {
+		// Dim
+		~ div#dim {
+			visibility: visible;
+			opacity: .7;
+		}
+	}
+
+	// Dim
+	~ div#dim {
+		position: fixed;
+		inset: 0;
+		background-color: black;
+		z-index: 1;
+		opacity: 0;
+		visibility: hidden;
+
+		// Transition
+		@include mixins.transition(opacity nav.$transition-duration);
+	}
+}
+
+// When hamburger is checked, show aside
+header:has(label.hamburger > input:checked) + main > aside {
+	@include mixins.transform(translateX(0));
+}
+
+// Breath dim when loading something
+@keyframes breath {
+	0% {
+		opacity: 0;
+	}
+	50% {
+		opacity: .7;
+	}
+	100% {
+		opacity: 0;
+	}
+}

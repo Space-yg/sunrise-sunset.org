@@ -1,0 +1,289 @@
+nav {
+  position: sticky;
+  display: -webkit-flex;
+  display: flex;
+  background-color: rgb(225, 225, 225);
+  max-height: 4em;
+}
+nav > menu {
+  -ms-flex: 1;
+  flex: 1;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+nav > menu:first-child > li:has(> a > img) {
+  padding: 0.5em 1em;
+}
+nav > menu:first-child > li > a,
+nav > menu:first-child > li > a > img {
+  min-height: 3em;
+  display: block;
+}
+nav > menu:last-child {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+nav > menu > li {
+  display: inline-block;
+  padding: 1em;
+  -webkit-transition: padding 0.5s;
+  -moz-transition: padding 0.5s;
+  -o-transition: padding 0.5s;
+  transition: padding 0.5s;
+}
+nav a {
+  text-decoration: none;
+}
+
+:root {
+  --hb-foreground: black;
+}
+
+label.hamburger {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4em;
+  cursor: pointer;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  z-index: 3;
+}
+label.hamburger::before, label.hamburger::after,
+label.hamburger > input {
+  content: "";
+  width: 2em;
+  height: 0.4em;
+  background-color: var(--hb-foreground);
+  border-radius: 9999px;
+  -webkit-transform-origin: right center;
+  -moz-transform-origin: right center;
+  -ms-transform-origin: right center;
+  -o-transform-origin: right center;
+  transform-origin: 2.8em center;
+  -webkit-transition: background-color 0.1666666667s, width 0.5s, transform 0.5s, -webkit-transform 0.5s;
+  -moz-transition: background-color 0.1666666667s, width 0.5s, transform 0.5s, -moz-transform 0.5s;
+  -o-transition: background-color 0.1666666667s, width 0.5s, transform 0.5s, -o-transform 0.5s;
+  transition: background-color 0.1666666667s, width 0.5s, transform 0.5s, -o-transform 0.5s, -ms-transform 0.5s, -moz-transform 0.5s, -webkit-transform 0.5s;
+}
+label.hamburger > input {
+  width: 100%;
+  border: none;
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  pointer-events: none;
+  opacity: 1;
+  -webkit-transition: opacity 0.125s linear;
+  -moz-transition: opacity 0.125s linear;
+  -o-transition: opacity 0.125s linear;
+  transition: opacity 0.125s linear;
+}
+label.hamburger > input:checked {
+  --hb-foreground: white;
+  opacity: 0;
+}
+label.hamburger:has(> input:checked)::before {
+  -webkit-transform: rotate(-45deg) translateY(-0.32em);
+  -moz-transform: rotate(-45deg) translateY(-0.32em);
+  -ms-transform: rotate(-45deg) translateY(-0.32em);
+  -o-transform: rotate(-45deg) translateY(-0.32em);
+  transform: rotate(-45deg) translateY(-0.32em);
+}
+label.hamburger:has(> input:checked)::after {
+  -webkit-transform: rotate(45deg) translateY(0.32em);
+  -moz-transform: rotate(45deg) translateY(0.32em);
+  -ms-transform: rotate(45deg) translateY(0.32em);
+  -o-transform: rotate(45deg) translateY(0.32em);
+  transform: rotate(45deg) translateY(0.32em);
+}
+label.hamburger:has(> input:checked)::before, label.hamburger:has(> input:checked)::after {
+  --hb-foreground: white;
+  width: 2.8284271247em;
+}
+
+li.hamburger {
+  width: 2em;
+  min-height: 2em;
+  padding: 1em;
+  display: none;
+}
+
+body:has(label.hamburger > input:checked) {
+  overflow-y: hidden;
+}
+
+aside {
+  position: fixed;
+  width: min(90%, 25em);
+  min-height: 100dvh;
+  right: 0;
+  top: 0;
+  background-color: lightgray;
+  padding-top: 4em;
+  z-index: 2;
+  -webkit-transform: translateX(100%);
+  -moz-transform: translateX(100%);
+  -ms-transform: translateX(100%);
+  -o-transform: translateX(100%);
+  transform: translateX(100%);
+  -webkit-transition-duration: 0.5s;
+  -moz-transition-duration: 0.5s;
+  -o-transition-duration: 0.5s;
+  transition-duration: 0.5s;
+  -webkit-transition-property: -webkit-transform, transform;
+  -moz-transition-property: -moz-transform, transform;
+  -o-transition-property: -o-transform, transform;
+  transition-property: -webkit-transform, -moz-transform, -ms-transform, -o-transform, transform;
+}
+aside ul {
+  padding-left: 0.5em;
+  list-style-type: none;
+  margin-top: 0;
+}
+aside ul > li {
+  margin-top: 0.5em;
+}
+aside details {
+  border: 1px solid black;
+  border-radius: 0.5em;
+  padding: 0 0.5em;
+  margin-bottom: 0.5em;
+}
+aside details > summary {
+  list-style-type: none;
+  position: relative;
+  padding: 0.5em 0;
+  cursor: pointer;
+}
+aside details > summary::after {
+  content: "";
+  position: absolute;
+  right: 0.2em;
+  top: calc(50% - 0.3em);
+  width: 0.5em;
+  height: 0.5em;
+  border-bottom: 0.2em solid black;
+  border-right: 0.2em solid black;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  -webkit-transition-property: right, top, -webkit-transform, transform;
+  -moz-transition-property: right, top, -moz-transform, transform;
+  -o-transition-property: right, top, -o-transform, transform;
+  transition-property: right, top, -webkit-transform, -moz-transform, -ms-transform, -o-transform, transform;
+  -webkit-transition-duration: 0.3s;
+  -moz-transition-duration: 0.3s;
+  -o-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+}
+aside details > summary + div {
+  display: grid;
+  grid-template-rows: 0fr;
+  -webkit-transition: grid-template-rows 0.3s;
+  -moz-transition: grid-template-rows 0.3s;
+  -o-transition: grid-template-rows 0.3s;
+  transition: grid-template-rows 0.3s;
+}
+aside details > summary + div > div {
+  overflow: hidden;
+}
+aside details.open > summary::after {
+  right: 0.1em;
+  top: calc(50% - 0.5em);
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+aside details.open > summary + div {
+  grid-template-rows: 1fr;
+}
+aside > details {
+  width: 80%;
+  margin: auto;
+}
+
+@media (width > 1400px) {
+  main {
+    display: flex;
+    gap: 3em;
+    align-items: flex-start;
+    width: 70em !important;
+    padding-right: 10em;
+  }
+  aside {
+    position: -webkit-sticky;
+    position: sticky;
+    width: min-content;
+    min-height: min-content;
+    flex-basis: 25em;
+    padding-top: 1.5em;
+    background-color: transparent;
+    -webkit-transition: none;
+    -moz-transition: none;
+    -o-transition: none;
+    transition: none;
+    -webkit-transform: translateX(0);
+    -moz-transform: translateX(0);
+    -ms-transform: translateX(0);
+    -o-transform: translateX(0);
+    transform: translateX(0);
+    z-index: 0;
+  }
+  aside > details {
+    width: 100%;
+    margin: 0;
+  }
+  article {
+    width: 100%;
+  }
+  label.hamburger {
+    display: none;
+  }
+}
+label.hamburger:has(> input:checked) ~ div#dim {
+  visibility: visible;
+  opacity: 0.7;
+}
+label.hamburger ~ div#dim {
+  position: fixed;
+  inset: 0;
+  background-color: black;
+  z-index: 1;
+  opacity: 0;
+  visibility: hidden;
+  -webkit-transition: opacity 0.5s;
+  -moz-transition: opacity 0.5s;
+  -o-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+
+header:has(label.hamburger > input:checked) + main > aside {
+  -webkit-transform: translateX(0);
+  -moz-transform: translateX(0);
+  -ms-transform: translateX(0);
+  -o-transform: translateX(0);
+  transform: translateX(0);
+}
+
+@keyframes breath {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/*# sourceMappingURL=menu.css.map */

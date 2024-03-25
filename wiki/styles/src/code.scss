@@ -1,0 +1,58 @@
+// Code
+code {
+	display: inline-block;
+	background-color: rgb(225, 225, 225);
+	padding: .2em .4em;
+	border-radius: .75em;
+	margin: .1em 0;
+
+	// Code then code in anchor
+	// <code>...</code>
+	// <a><code>...</code></a>
+	+ a code {
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
+		padding-left: 0;
+	}
+	&:has(+ a code) {
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+		padding-right: 0;
+	}
+}
+
+// Code in anchor
+a code {
+	text-decoration: 1px solid underline black;
+}
+
+// Strikethrough
+s {
+	// Code in strikethrough
+	code {
+		text-decoration: line-through;
+
+	}
+
+	// Code in anchor and strikethrough
+	a code {
+		text-decoration: 1px solid underline line-through black;
+	}
+}
+
+// Anchor
+a {
+	// Code in anchor then code
+	// <a><code>...</code></a>
+	// <code>...</code>
+	&:has(code) + code {
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
+		padding-left: 0;
+	}
+	&:has(+ code) code {
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+		padding-right: 0;
+	}
+}

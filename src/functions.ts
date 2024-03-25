@@ -7,6 +7,11 @@ import type SunriseSunset from "./types"
 
 /**
  * Get raw sunrise sunset data
+ * @template Formatted Whether the response is formatted or not.
+ * 
+ * If `true`, API response is in relative format to `tzid`, and `day_length` is repented as time (e.g. `10:24:04`).
+ * Otherwise API response is in the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format and `day_length` is repented as seconds.
+ * 
  * @param parameters Parameter options
  * @returns Raw sunrise sunset data
  * @since v1.0.0
@@ -18,6 +23,11 @@ export async function getSunriseSunset<Formatted extends boolean = true>(
 ): Promise<SunriseSunset.APIResponseFormatted<Formatted>>
 /**
  * Get raw sunrise sunset data
+ * @template Formatted Whether the response is formatted or not.
+ * 
+ * If `true`, API response is in relative format to `tzid`, and `day_length` is repented as time (e.g. `10:24:04`).
+ * Otherwise API response is in the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format and `day_length` is repented as seconds.
+ * 
  * @param latitude Latitude in decimal degrees.
  * @param longitude Longitude in decimal degrees.
  * @param date Date in YYYY-MM-DD format. Also accepts [other date formats](https://www.php.net/manual/en/datetime.formats.php#datetime.formats.date) and [even relative date formats](https://www.php.net/manual/en/datetime.formats.php#datetime.formats.relative).

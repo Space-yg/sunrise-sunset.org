@@ -1,0 +1,206 @@
+@use 'sass:math';
+
+// Navigation bar
+$nav-height: 4em;
+$transition-duration: .5s;
+nav {
+	position: sticky;
+	display: -webkit-flex;
+	display: flex;
+	background-color: rgb(225, 225, 225);
+	max-height: $nav-height;
+
+	// Menu
+	> menu {
+		-ms-flex: 1;
+		flex: 1;
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+
+		// Image
+		&:first-child > li {
+			&:has(> a > img) {
+				padding: .5em 1em;
+			}
+			
+			> a,
+			> a > img {
+				min-height: calc($nav-height - 1em);
+				display: block;
+			}
+		}
+
+		// Links
+		&:last-child {
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+		}
+
+		// List item
+		> li {
+			display: inline-block;
+			padding: 1em;
+
+			// Transition
+			-webkit-transition: padding $transition-duration;
+			-moz-transition: padding $transition-duration;
+			-o-transition: padding $transition-duration;
+			transition: padding $transition-duration;
+		}
+	}
+
+	// Anchor
+	a {
+		text-decoration: none;
+	}
+}
+
+//// Hamburger
+$bar-width: 2em;
+$bar-height: .4em;
+$hb-gap: .4em;
+$hb-height: $bar-height * 3 + $hb-gap * 2;
+:root {
+	--hb-foreground: black;
+}
+
+// Hamburger
+label.hamburger {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: $hb-gap;
+	cursor: pointer;
+	position: absolute;
+	top: math.div($nav-height, 2) - math.div($hb-height, 2);
+	right: 1em;
+	z-index: 3;
+
+	// Bars
+	&::before,
+	&::after,
+	> input {
+		content: "";
+		width: $bar-width;
+		height: $bar-height;
+		background-color: var(--hb-foreground);
+		border-radius: 9999px;
+
+		// Transform origin
+		-webkit-transform-origin: right center;
+		-moz-transform-origin: right center;
+		-ms-transform-origin: right center;
+		-o-transform-origin: right center;
+		transform-origin: ($bar-width - math.div($bar-height, 2) + 1em) center;
+
+		// Transition
+		-webkit-transition:
+			background-color math.div($transition-duration, 3),
+			width $transition-duration,
+			transform $transition-duration,
+			-webkit-transform $transition-duration;
+		-moz-transition:
+			background-color math.div($transition-duration, 3),
+			width $transition-duration,
+			transform $transition-duration,
+			-moz-transform $transition-duration;
+		-o-transition:
+			background-color math.div($transition-duration, 3),
+			width $transition-duration,
+			transform $transition-duration,
+			-o-transform $transition-duration;
+		transition:
+			background-color math.div($transition-duration, 3),
+			width $transition-duration,
+			transform $transition-duration,
+			-o-transform $transition-duration,
+			-ms-transform $transition-duration,
+			-moz-transform $transition-duration,
+			-webkit-transform $transition-duration;
+	}
+
+	// Middle bar
+	> input {
+		width: 100%;
+		border: none;
+		appearance: none;
+		margin: 0;
+		padding: 0;
+		outline: none;
+		pointer-events: none;
+		opacity: 1;
+
+		// Transition
+		-webkit-transition: opacity math.div($transition-duration, 4) linear;
+		-moz-transition: opacity math.div($transition-duration, 4) linear;
+		-o-transition: opacity math.div($transition-duration, 4) linear;
+		transition: opacity math.div($transition-duration, 4) linear;
+		
+		// Checked
+		&:checked {
+			--hb-foreground: white;
+			opacity: 0;
+		}
+	}
+
+	// Checked
+	&:has(> input:checked) {
+		// Rotate top and bottom bars
+		&::before {
+			// Transform
+			-webkit-transform:
+				rotate(-45deg)
+				translateY(math.div($bar-height, -5) * 4);
+			-moz-transform:
+				rotate(-45deg)
+				translateY(math.div($bar-height, -5) * 4);
+			-ms-transform:
+				rotate(-45deg)
+				translateY(math.div($bar-height, -5) * 4);
+			-o-transform:
+				rotate(-45deg)
+				translateY(math.div($bar-height, -5) * 4);
+			transform:
+				rotate(-45deg)
+				translateY(math.div($bar-height, -5) * 4);
+		}
+		&::after {
+			// Transform
+			-webkit-transform:
+				rotate(45deg)
+				translateY(math.div($bar-height, 5) * 4);
+			-moz-transform:
+				rotate(45deg)
+				translateY(math.div($bar-height, 5) * 4);
+			-ms-transform:
+				rotate(45deg)
+				translateY(math.div($bar-height, 5) * 4);
+			-o-transform:
+				rotate(45deg)
+				translateY(math.div($bar-height, 5) * 4);
+			transform:
+				rotate(45deg)
+				translateY(math.div($bar-height, 5) * 4);
+		}
+		&::before,
+		&::after {
+			--hb-foreground: white;
+			width: $hb-height * math.sqrt(2);
+		}
+	}
+}
+
+// Add width to nav
+li.hamburger {
+	width: $bar-width;
+	min-height: $hb-height;
+	padding: 1em;
+	display: none;
+}
+
+// Stop scrolling
+body:has(label.hamburger > input:checked) {
+	overflow-y: hidden;
+}

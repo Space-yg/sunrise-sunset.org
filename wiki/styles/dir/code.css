@@ -1,0 +1,41 @@
+code {
+  display: inline-block;
+  background-color: rgb(225, 225, 225);
+  padding: 0.2em 0.4em;
+  border-radius: 0.75em;
+  margin: 0.1em 0;
+}
+code + a code {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding-left: 0;
+}
+code:has(+ a code) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding-right: 0;
+}
+
+a code {
+  text-decoration: 1px solid underline black;
+}
+
+s code {
+  text-decoration: line-through;
+}
+s a code {
+  text-decoration: 1px solid underline line-through black;
+}
+
+a:has(code) + code {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding-left: 0;
+}
+a:has(+ code) code {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding-right: 0;
+}
+
+/*# sourceMappingURL=code.css.map */

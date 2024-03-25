@@ -1,9 +1,15 @@
 {
   "name": "sunrise-sunset.org",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Library for sunrise-sunset.org's API",
-  "main": "index.js",
-  "scripts": {},
+  "main": "./dir/index.js",
+  "scripts": {
+    "ts-watch": "npm run ts-watch-main && npm run ts-watch-wiki",
+    "ts-watch-main": "tsc ./tsconfig.json --watch",
+    "ts-watch-wiki": "tsc ./wiki/tsconfig.json --watch",
+    "scss-watch": "sass --watch wiki/styles/src:wiki/styles/dir",
+    "sass-watch": "npm run scss-watch"
+  },
   "keywords": [
     "sunrise-sunset.org",
     "sunrise-sunset",
@@ -12,5 +18,11 @@
     "API"
   ],
   "author": "Space.yg",
-  "license": "MIT"
+  "repository": {
+    "url": "https://github.com/Space-yg/sunrise-sunset.org"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@types/markdown-it": "^13.0.7"
+  }
 }

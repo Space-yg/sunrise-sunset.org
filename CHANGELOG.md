@@ -1,3 +1,15 @@
+# v1.2.0
+### Added
+- [Wiki](space-yg.github.io/sunrise-sunset.org/wiki/index.html)!
+- `@since` to each property in each interface.
+- `@default` to properties with default value.
+- `@template` for type parameters.
+- Description to `SunriseSunset.APIResponseNotFormatted`.
+
+### Edited
+- `SunriseSunset` description.
+- `SunriseSunset.APIParameters` description.
+
 # v1.1.0
 ### Added
 - Added this CHANGELOG.md.

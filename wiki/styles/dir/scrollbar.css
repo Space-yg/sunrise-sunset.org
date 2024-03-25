@@ -1,0 +1,36 @@
+::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+div#scrollbar {
+  position: fixed;
+  width: min(100%, 10em);
+  height: 100%;
+  right: 0;
+  top: 0;
+  z-index: 1;
+}
+div#scrollbar > div#thumb {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 0.5em;
+  background-color: gray;
+  border-radius: 9999px;
+  opacity: 0;
+  -webkit-transition: opacity 0.2s;
+  -moz-transition: opacity 0.2s;
+  -o-transition: opacity 0.2s;
+  transition: opacity 0.2s;
+  z-index: 999;
+}
+div#scrollbar:hover > div#thumb {
+  opacity: 1;
+}
+
+/*# sourceMappingURL=scrollbar.css.map */
