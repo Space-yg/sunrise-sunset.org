@@ -33,7 +33,7 @@ function placeArticle() {
         let hs = [...document.querySelectorAll("section > h1, section > h2, section > h3")];
         hs.forEach(h => {
             h.id = headingToAnchor(h.innerText);
-            h.insertAdjacentHTML("afterbegin", "<button type='button' class='permalink'><img src='/wiki/resources/images/icons/permalink.svg' alt='¶'></button>");
+            h.insertAdjacentHTML("afterbegin", `<button type="button" class="permalink"><img src="${deploymentPath ? "/sunrise-sunset.org" : ""}/wiki/resources/images/icons/permalink.svg" alt="¶"></button>`);
         });
         for (const button of document.querySelectorAll(".permalink")) {
             button.addEventListener("click", () => {
@@ -187,14 +187,18 @@ function fixLinks(searchIn) {
         const href = a.getAttribute("href");
         if (href.startsWith("http") || href.startsWith("#"))
             continue;
-        if (deploymentPath)
-            a.setAttribute("href", "/sunrise-sunset.org" + href);
+        if (deploymentPath) {
+            if (href.startsWith("./"))
+                a.setAttribute("href", location.pathname.split("/").slice(0, -1).join("/") + href.slice(1));
+            else
+                a.setAttribute("href", "/sunrise-sunset.org" + href);
+        }
     }
     for (const img of searchIn.getElementsByTagName("img")) {
         const src = img.getAttribute("src");
         if (src.startsWith("http"))
             continue;
         if (deploymentPath)
-            img.setAttribute("href", "/sunrise-sunset.org" + src);
+            img.setAttribute("src", "/sunrise-sunset.org" + src);
     }
 }
