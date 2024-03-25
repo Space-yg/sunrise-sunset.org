@@ -4,9 +4,11 @@
 import md from "./markdown/index.js"
 import * as __ from "./markdown/anchor.js"
 import * as ___ from "./markdown/section.js"
+import * as ____ from "./markdown/codeAnchor.js"
 // import * as ____ from "./markdown/linkify.js";
 __
 ___
+____
 // ____
 
 export default md

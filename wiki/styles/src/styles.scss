@@ -127,14 +127,14 @@ a {
 		}
 
 		// Instagram
-		&[href*="instagram."]::before { content: url("/wiki/resources/images/socials/instagram-icon.svg"); }
+		&[href*="instagram."]::before { content: url("../../resources/images/socials/instagram-icon.svg"); }
 		// X
-		&[href*="twitter."]::before, &[href*="x."]::before { content: url("/wiki/resources/images/socials/x-icon.svg"); }
+		&[href*="twitter."]::before, &[href*="x."]::before { content: url("../../resources/images/socials/x-icon.svg"); }
 		// Github
-		&[href*="github."]::before { content: url("/wiki/resources/images/socials/github-icon.svg"); }
+		&[href*="github."]::before { content: url("../../resources/images/socials/github-icon.svg"); }
 		// Discord
 		&[href*="discordapp."]::before, &[href*="discord."]::before {
-			content: url("/wiki/resources/images/socials/discord-icon.svg");
+			content: url("../../resources/images/socials/discord-icon.svg");
 			width: 2ch;
 			padding: 0 .1em 0 .05em;
 		}

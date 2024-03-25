@@ -5,15 +5,15 @@ code {
   border-radius: 0.75em;
   margin: 0.1em 0;
 }
-code + a code {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  padding-left: 0;
-}
-code:has(+ a code) {
+code.right-open {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   padding-right: 0;
+}
+code.left-open {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding-left: 0;
 }
 
 a code {
@@ -25,17 +25,6 @@ s code {
 }
 s a code {
   text-decoration: 1px solid underline line-through black;
-}
-
-a:has(code) + code {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  padding-left: 0;
-}
-a:has(+ code) code {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  padding-right: 0;
 }
 
 footer {
@@ -496,16 +485,16 @@ a[href^="https://"][href*="twitter."]::before, a[href^="https://"][href*="x."]::
   filter: var(--icon-filter);
 }
 a[href^="https://"][href*="instagram."]::before, a[href^="https://www."][href*="instagram."]::before {
-  content: url("/wiki/resources/images/socials/instagram-icon.svg");
+  content: url("../../resources/images/socials/instagram-icon.svg");
 }
 a[href^="https://"][href*="twitter."]::before, a[href^="https://"][href*="x."]::before, a[href^="https://www."][href*="twitter."]::before, a[href^="https://www."][href*="x."]::before {
-  content: url("/wiki/resources/images/socials/x-icon.svg");
+  content: url("../../resources/images/socials/x-icon.svg");
 }
 a[href^="https://"][href*="github."]::before, a[href^="https://www."][href*="github."]::before {
-  content: url("/wiki/resources/images/socials/github-icon.svg");
+  content: url("../../resources/images/socials/github-icon.svg");
 }
 a[href^="https://"][href*="discordapp."]::before, a[href^="https://"][href*="discord."]::before, a[href^="https://www."][href*="discordapp."]::before, a[href^="https://www."][href*="discord."]::before {
-  content: url("/wiki/resources/images/socials/discord-icon.svg");
+  content: url("../../resources/images/socials/discord-icon.svg");
   width: 2ch;
   padding: 0 0.1em 0 0.05em;
 }

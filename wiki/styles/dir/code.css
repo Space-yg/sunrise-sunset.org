@@ -5,15 +5,15 @@ code {
   border-radius: 0.75em;
   margin: 0.1em 0;
 }
-code + a code {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  padding-left: 0;
-}
-code:has(+ a code) {
+code.right-open {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   padding-right: 0;
+}
+code.left-open {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding-left: 0;
 }
 
 a code {
@@ -25,17 +25,6 @@ s code {
 }
 s a code {
   text-decoration: 1px solid underline line-through black;
-}
-
-a:has(code) + code {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  padding-left: 0;
-}
-a:has(+ code) code {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  padding-right: 0;
 }
 
 /*# sourceMappingURL=code.css.map */
