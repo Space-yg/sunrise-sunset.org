@@ -37,6 +37,9 @@ function placeArticle() {
 		const html = await text.text()
 		article.innerHTML = md.render(html)
 
+		// Fix all anchor tags in article
+		fixLinks(article)
+
 		// Get all headings
 		let hs: HTMLHeadingElement[] = [...document.querySelectorAll<HTMLHeadingElement>("section > h1, section > h2, section > h3")]
 		// Put heading permalink
@@ -71,6 +74,106 @@ function placeArticle() {
 	})
 	return response
 }
+
+// When user goes back, get and place the article
+window.addEventListener("popstate", async () => {
+	await placeArticle()
+	setTimeout(() => {
+		setupAnchors()
+		setupScrollbar()
+	}, 10)
+})
+
+// Get an place the article
+const articleResponse = placeArticle()
+
+//// Header
+const headerResponse = findFile(`${location.origin}/wiki/header.html`)
+headerResponse.then(async text => {
+	if (!text.ok) return
+
+	// Add header
+	const html = await text.text()
+	main.insertAdjacentHTML("beforebegin", html)
+	const header = document.getElementsByTagName("header")[0]
+
+	// Fix all anchor tags in header
+	fixLinks(header)
+
+	// Execute header.js
+	var headerJS = await findFile(`${location.origin}/wiki/scripts/dir/header.js`)
+	if (!headerJS.ok) return
+	eval(await headerJS.text())
+})
+
+//// Aside
+const asideResponse = findFile(`${location.origin}/wiki/aside.html`)
+asideResponse.then(async text => {
+	if (!text.ok) return
+
+	// Add aside
+	const html = await text.text()
+	main.insertAdjacentHTML("afterbegin", html)
+	const aside = document.getElementsByTagName("aside")[0]
+
+	// Fix all anchor tags in aside
+	fixLinks(aside)
+
+	// Details and summary
+	for (const details of aside.getElementsByTagName("details")) {
+		// Summary
+		(<HTMLElement> details.firstElementChild!).addEventListener("click", () => {
+			// Change class
+			details.className = details.className === "close" ? "open" : "close"
+
+			// Open next details if there is only 1 inside
+			checkNextDetails(details)
+		})
+
+		// Stop default adding open attribute
+		details.addEventListener("click", event => {
+			event.preventDefault()
+		})
+
+		// Make all open so that elements are visible but not displayed
+		details.open = true
+		details.className = "close"
+	}
+
+	// Anchor
+	for (const a of aside.getElementsByTagName("a")) {
+		// Do not open or close when the link is pressed
+		a.addEventListener("click", event => {
+			event.stopPropagation()
+		})
+	}
+
+	articleResponse.then(() => {
+		// Redo the anchor tag
+		setupAnchors(false)
+	})
+})
+
+//// Footer
+findFile(`${location.origin}/wiki/footer.html`)
+	.then(async text => {
+		if (!text.ok) return
+
+		// Add footer
+		const html = await text.text()
+		main.insertAdjacentHTML("afterend", html)
+		const footer = document.getElementsByTagName("footer")[0]
+
+		// Fix all anchor tags in footer
+		fixLinks(footer)
+
+		// When everything has been loaded
+		await headerResponse
+		await articleResponse
+		await asideResponse
+		setupScrollbar()
+	})
+
 
 /**
  * Event when clicking a link that is the same as the location's href
@@ -153,33 +256,6 @@ function setupScrollbar() {
 	}
 }
 
-// When user goes back, get and place the article
-window.addEventListener("popstate", async () => {
-	await placeArticle()
-	setTimeout(() => {
-		setupAnchors()
-		setupScrollbar()
-	}, 10)
-})
-
-// Get an place the article
-const articleResponse = placeArticle()
-
-//// Header
-const headerResponse = findFile(`${location.origin}/wiki/header.html`)
-headerResponse.then(async text => {
-	if (!text.ok) return
-
-	// Add header
-	const html = await text.text()
-	main.insertAdjacentHTML("beforebegin", html)
-
-	// Execute header.js
-	var headerJS = await findFile(`${location.origin}/wiki/scripts/dir/header.js`)
-	if (!headerJS.ok) return
-	eval(await headerJS.text())
-})
-
 /**
  * Check if there is only one details inside the details. If so, then open it and repeat again for the next one
  * @param details The details to check
@@ -192,63 +268,24 @@ function checkNextDetails(details: HTMLDetailsElement) {
 	}
 }
 
-//// Aside
-findFile(`${location.origin}/wiki/aside.html`)
-	.then(async text => {
-		if (!text.ok) return
+/**
+ * Fixes anchor and image links
+ * @param searchIn The element to search for anchor links in
+ */
+function fixLinks(searchIn: Document | HTMLElement) {
+	// Fix anchors
+	for (const a of searchIn.getElementsByTagName("a")) {
+		const href = a.getAttribute("href")!
+		if (href.startsWith("http") || href.startsWith("#")) continue
 
-		// Add aside
-		const html = await text.text()
-		main.insertAdjacentHTML("afterbegin", html)
-		const aside = document.getElementsByTagName("aside")[0]
+		if (location.pathname.split("/")[1] === "sunrise-sunset.org") a.setAttribute("href", "/sunrise-sunset.org" + href)
+	}
 
-		// Details and summary
-		for (const details of aside.getElementsByTagName("details")) {
-			// Summary
-			(<HTMLElement> details.firstElementChild!).addEventListener("click", () => {
-				// Change class
-				details.className = details.className === "close" ? "open" : "close"
-				checkNextDetails(details)
-			})
+	// Fix images
+	for (const img of searchIn.getElementsByTagName("img")) {
+		const src = img.getAttribute("src")!
+		if (src.startsWith("http")) continue
 
-			// Stop default adding open attribute
-			details.addEventListener("click", event => {
-				event.preventDefault()
-			})
-
-			// Make all open so that elements are displayed
-			details.open = true
-			details.className = "close"
-		}
-
-		// Anchor
-		for (const a of aside.getElementsByTagName("a")) {
-			// Do not open or close when the link is pressed
-			a.addEventListener("click", event => {
-				event.stopPropagation()
-			})
-		}
-
-		articleResponse.then(() => {
-			// Redo the anchor tag
-			setupAnchors(false)
-		})
-	})
-
-//// Footer
-findFile(`${location.origin}/wiki/footer.html`)
-	.then(async text => {
-		if (!text.ok) return
-
-		// Add footer
-		const html = await text.text()
-		main.insertAdjacentHTML("afterend", html)
-
-		headerResponse.then(() => {
-			//// When everything has been loaded
-			articleResponse.then(() => {
-				// Scrollbar
-				setupScrollbar()
-			})
-		})
-	})
+		if (location.pathname.split("/")[1] === "sunrise-sunset.org") img.setAttribute("href", "/sunrise-sunset.org" + src)
+	}
+}

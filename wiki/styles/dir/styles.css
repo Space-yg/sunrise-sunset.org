@@ -403,7 +403,7 @@ body {
 
 main {
   width: min(100% - 3em, 50em);
-  margin: auto;
+  margin: 0 auto auto;
 }
 
 article {

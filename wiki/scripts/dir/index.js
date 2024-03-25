@@ -19,6 +19,7 @@ function placeArticle() {
             return;
         const html = await text.text();
         article.innerHTML = md.render(html);
+        fixLinks(article);
         let hs = [...document.querySelectorAll("section > h1, section > h2, section > h3")];
         hs.forEach(h => {
             h.id = headingToAnchor(h.innerText);
@@ -45,6 +46,68 @@ function placeArticle() {
     });
     return response;
 }
+window.addEventListener("popstate", async () => {
+    await placeArticle();
+    setTimeout(() => {
+        setupAnchors();
+        setupScrollbar();
+    }, 10);
+});
+const articleResponse = placeArticle();
+const headerResponse = findFile(`${location.origin}/wiki/header.html`);
+headerResponse.then(async (text) => {
+    if (!text.ok)
+        return;
+    const html = await text.text();
+    main.insertAdjacentHTML("beforebegin", html);
+    const header = document.getElementsByTagName("header")[0];
+    fixLinks(header);
+    var headerJS = await findFile(`${location.origin}/wiki/scripts/dir/header.js`);
+    if (!headerJS.ok)
+        return;
+    eval(await headerJS.text());
+});
+const asideResponse = findFile(`${location.origin}/wiki/aside.html`);
+asideResponse.then(async (text) => {
+    if (!text.ok)
+        return;
+    const html = await text.text();
+    main.insertAdjacentHTML("afterbegin", html);
+    const aside = document.getElementsByTagName("aside")[0];
+    fixLinks(aside);
+    for (const details of aside.getElementsByTagName("details")) {
+        details.firstElementChild.addEventListener("click", () => {
+            details.className = details.className === "close" ? "open" : "close";
+            checkNextDetails(details);
+        });
+        details.addEventListener("click", event => {
+            event.preventDefault();
+        });
+        details.open = true;
+        details.className = "close";
+    }
+    for (const a of aside.getElementsByTagName("a")) {
+        a.addEventListener("click", event => {
+            event.stopPropagation();
+        });
+    }
+    articleResponse.then(() => {
+        setupAnchors(false);
+    });
+});
+findFile(`${location.origin}/wiki/footer.html`)
+    .then(async (text) => {
+    if (!text.ok)
+        return;
+    const html = await text.text();
+    main.insertAdjacentHTML("afterend", html);
+    const footer = document.getElementsByTagName("footer")[0];
+    fixLinks(footer);
+    await headerResponse;
+    await articleResponse;
+    await asideResponse;
+    setupScrollbar();
+});
 function aSamePage(event) {
     event.preventDefault();
     const hamburgerInput = document.getElementById("hamburger");
@@ -102,25 +165,6 @@ function setupScrollbar() {
         thumb.style.height = "";
     }
 }
-window.addEventListener("popstate", async () => {
-    await placeArticle();
-    setTimeout(() => {
-        setupAnchors();
-        setupScrollbar();
-    }, 10);
-});
-const articleResponse = placeArticle();
-const headerResponse = findFile(`${location.origin}/wiki/header.html`);
-headerResponse.then(async (text) => {
-    if (!text.ok)
-        return;
-    const html = await text.text();
-    main.insertAdjacentHTML("beforebegin", html);
-    var headerJS = await findFile(`${location.origin}/wiki/scripts/dir/header.js`);
-    if (!headerJS.ok)
-        return;
-    eval(await headerJS.text());
-});
 function checkNextDetails(details) {
     const next = details.lastElementChild.firstElementChild.firstElementChild;
     if (next.tagName === "DETAILS" && next.nextElementSibling === null) {
@@ -128,42 +172,19 @@ function checkNextDetails(details) {
         checkNextDetails(next);
     }
 }
-findFile(`${location.origin}/wiki/aside.html`)
-    .then(async (text) => {
-    if (!text.ok)
-        return;
-    const html = await text.text();
-    main.insertAdjacentHTML("afterbegin", html);
-    const aside = document.getElementsByTagName("aside")[0];
-    for (const details of aside.getElementsByTagName("details")) {
-        details.firstElementChild.addEventListener("click", () => {
-            details.className = details.className === "close" ? "open" : "close";
-            checkNextDetails(details);
-        });
-        details.addEventListener("click", event => {
-            event.preventDefault();
-        });
-        details.open = true;
-        details.className = "close";
+function fixLinks(searchIn) {
+    for (const a of searchIn.getElementsByTagName("a")) {
+        const href = a.getAttribute("href");
+        if (href.startsWith("http") || href.startsWith("#"))
+            continue;
+        if (location.pathname.split("/")[1] === "sunrise-sunset.org")
+            a.setAttribute("href", "/sunrise-sunset.org" + href);
     }
-    for (const a of aside.getElementsByTagName("a")) {
-        a.addEventListener("click", event => {
-            event.stopPropagation();
-        });
+    for (const img of searchIn.getElementsByTagName("img")) {
+        const src = img.getAttribute("src");
+        if (src.startsWith("http"))
+            continue;
+        if (location.pathname.split("/")[1] === "sunrise-sunset.org")
+            img.setAttribute("href", "/sunrise-sunset.org" + src);
     }
-    articleResponse.then(() => {
-        setupAnchors(false);
-    });
-});
-findFile(`${location.origin}/wiki/footer.html`)
-    .then(async (text) => {
-    if (!text.ok)
-        return;
-    const html = await text.text();
-    main.insertAdjacentHTML("afterend", html);
-    headerResponse.then(() => {
-        articleResponse.then(() => {
-            setupScrollbar();
-        });
-    });
-});
+}
