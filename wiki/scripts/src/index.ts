@@ -6,13 +6,22 @@ const main = document.getElementsByTagName("main")[0]
 const article = document.getElementsByTagName("article")[0]
 const title = document.getElementsByTagName("title")[0]
 
+/** The path has `sunrise-sunset.org` */
+const deploymentPath = location.pathname.split("/")[1] === "sunrise-sunset.org"
+
 /**
  * Try to find a file. If it is not found, then show and error
  * @param path The path to look for the file
  * @returns The {@link Response}
  */
 async function findFile(path: string): Promise<Response> {
-	var file = await fetch(path)
+	var file: Response
+	if (path.startsWith("/")) {
+		if (deploymentPath) file = await fetch(location.origin + "/sunrise-sunset.org" + path)
+		else file = await fetch(location.origin + path)
+	} else {
+		file = await fetch(path)
+	}
 	if (!file.ok) article.innerHTML = `<p>Woah! That shouldn't happen.</p><p>Please open an issue <a href='https://github.com/Space-yg/sunrise-sunset.org/issues'>here</a> to fix this problem.</p><p>Problem: File <code>${path.startsWith("./") ? location.origin + location.pathname.split("/").slice(0, -1).join("/").replace(path.slice(1).split("/").slice(0, -1).join("/"), "") + path.slice(1) : path}</code> does not exist.</p>`
 	return file
 }
@@ -88,7 +97,7 @@ window.addEventListener("popstate", async () => {
 const articleResponse = placeArticle()
 
 //// Header
-const headerResponse = findFile(`${location.origin}/wiki/header.html`)
+const headerResponse = findFile("/wiki/header.html")
 headerResponse.then(async text => {
 	if (!text.ok) return
 
@@ -101,13 +110,13 @@ headerResponse.then(async text => {
 	fixLinks(header)
 
 	// Execute header.js
-	var headerJS = await findFile(`${location.origin}/wiki/scripts/dir/header.js`)
+	var headerJS = await findFile("/wiki/scripts/dir/header.js")
 	if (!headerJS.ok) return
 	eval(await headerJS.text())
 })
 
 //// Aside
-const asideResponse = findFile(`${location.origin}/wiki/aside.html`)
+const asideResponse = findFile("/wiki/aside.html")
 asideResponse.then(async text => {
 	if (!text.ok) return
 
@@ -155,7 +164,7 @@ asideResponse.then(async text => {
 })
 
 //// Footer
-findFile(`${location.origin}/wiki/footer.html`)
+findFile("/wiki/footer.html")
 	.then(async text => {
 		if (!text.ok) return
 
@@ -278,7 +287,7 @@ function fixLinks(searchIn: Document | HTMLElement) {
 		const href = a.getAttribute("href")!
 		if (href.startsWith("http") || href.startsWith("#")) continue
 
-		if (location.pathname.split("/")[1] === "sunrise-sunset.org") a.setAttribute("href", "/sunrise-sunset.org" + href)
+		if (deploymentPath) a.setAttribute("href", "/sunrise-sunset.org" + href)
 	}
 
 	// Fix images
@@ -286,6 +295,6 @@ function fixLinks(searchIn: Document | HTMLElement) {
 		const src = img.getAttribute("src")!
 		if (src.startsWith("http")) continue
 
-		if (location.pathname.split("/")[1] === "sunrise-sunset.org") img.setAttribute("href", "/sunrise-sunset.org" + src)
+		if (deploymentPath) img.setAttribute("href", "/sunrise-sunset.org" + src)
 	}
 }
