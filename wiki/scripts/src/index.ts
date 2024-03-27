@@ -204,11 +204,13 @@ function aDifferentLink(this: HTMLAnchorElement, event: MouseEvent) {
 	history.pushState("", "", this.href)
 	dim.style.backgroundColor = "white"
 	dim.style.animation = "breath 1.5s infinite"
+	dim.style.visibility = "visible"
 	placeArticle()
 		.then(() => {
 			// After loading
 			dim.style.animation = ""
 			dim.style.backgroundColor = ""
+			dim.style.visibility = ""
 			hamburgerInput.checked = false
 			setTimeout(() => {
 				setupAnchors()
