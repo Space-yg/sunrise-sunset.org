@@ -4,21 +4,6 @@ const main = document.getElementsByTagName("main")[0];
 const article = document.getElementsByTagName("article")[0];
 const title = document.getElementsByTagName("title")[0];
 const deploymentPath = location.pathname.split("/")[1] === "sunrise-sunset.org";
-async function findFile(path) {
-    var file;
-    if (path.startsWith("/")) {
-        if (deploymentPath)
-            file = await fetch(location.origin + "/sunrise-sunset.org" + path);
-        else
-            file = await fetch(location.origin + path);
-    }
-    else {
-        file = await fetch(path);
-    }
-    if (!file.ok)
-        article.innerHTML = `<p>Woah! That shouldn't happen.</p><p>Please open an issue <a href='https://github.com/Space-yg/sunrise-sunset.org/issues'>here</a> to fix this problem.</p><p>Problem: File <code>${path.startsWith("./") ? location.origin + location.pathname.split("/").slice(0, -1).join("/").replace(path.slice(1).split("/").slice(0, -1).join("/"), "") + path.slice(1) : path}</code> does not exist.</p>`;
-    return file;
-}
 function placeArticle() {
     var filename = location.pathname.split("/").at(-1);
     filename = filename.substring(0, filename.length - 5);
@@ -118,6 +103,21 @@ findFile("/wiki/footer.html")
     await asideResponse;
     setupScrollbar();
 });
+async function findFile(path) {
+    var file;
+    if (path.startsWith("/")) {
+        if (deploymentPath)
+            file = await fetch(location.origin + "/sunrise-sunset.org" + path);
+        else
+            file = await fetch(location.origin + path);
+    }
+    else {
+        file = await fetch(path);
+    }
+    if (!file.ok)
+        article.innerHTML = `<p>Woah! That shouldn't happen.</p><p>Please open an issue <a href='https://github.com/Space-yg/sunrise-sunset.org/issues'>here</a> to fix this problem.</p><p>Problem: File <code>${path.startsWith("./") ? location.origin + location.pathname.split("/").slice(0, -1).join("/").replace(path.slice(1).split("/").slice(0, -1).join("/"), "") + path.slice(1) : path}</code> does not exist.</p>`;
+    return file;
+}
 function aSamePage(event) {
     event.preventDefault();
     const hamburgerInput = document.getElementById("hamburger");
@@ -182,14 +182,23 @@ function checkNextDetails(details) {
         checkNextDetails(next);
     }
 }
+function relativeToAbsolute(path) {
+    if (path.startsWith("../")) {
+        const count = [...path.matchAll(/\.\.\//g)].length;
+        return location.pathname.split("/").slice(0, -count - 1).join("/") + path.slice(count * 3 - 1);
+    }
+    else if (path.startsWith("./"))
+        return location.pathname.split("/").slice(0, -1).join("/") + path.slice(1);
+    return path;
+}
 function fixLinks(searchIn) {
     for (const a of searchIn.getElementsByTagName("a")) {
         const href = a.getAttribute("href");
         if (href.startsWith("http") || href.startsWith("#"))
             continue;
         if (deploymentPath) {
-            if (href.startsWith("./"))
-                a.setAttribute("href", location.pathname.split("/").slice(0, -1).join("/") + href.slice(1));
+            if (href.startsWith("./") || href.startsWith("../"))
+                a.setAttribute("href", relativeToAbsolute(href));
             else
                 a.setAttribute("href", "/sunrise-sunset.org" + href);
         }

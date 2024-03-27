@@ -9,23 +9,6 @@ const title = document.getElementsByTagName("title")[0]
 /** The path has `sunrise-sunset.org` */
 const deploymentPath = location.pathname.split("/")[1] === "sunrise-sunset.org"
 
-/**
- * Try to find a file. If it is not found, then show and error
- * @param path The path to look for the file
- * @returns The {@link Response}
- */
-async function findFile(path: string): Promise<Response> {
-	var file: Response
-	if (path.startsWith("/")) {
-		if (deploymentPath) file = await fetch(location.origin + "/sunrise-sunset.org" + path)
-		else file = await fetch(location.origin + path)
-	} else {
-		file = await fetch(path)
-	}
-	if (!file.ok) article.innerHTML = `<p>Woah! That shouldn't happen.</p><p>Please open an issue <a href='https://github.com/Space-yg/sunrise-sunset.org/issues'>here</a> to fix this problem.</p><p>Problem: File <code>${path.startsWith("./") ? location.origin + location.pathname.split("/").slice(0, -1).join("/").replace(path.slice(1).split("/").slice(0, -1).join("/"), "") + path.slice(1) : path}</code> does not exist.</p>`
-	return file
-}
-
 //// Article
 /**
  * Fetch and replace the article
@@ -183,6 +166,22 @@ findFile("/wiki/footer.html")
 		setupScrollbar()
 	})
 
+/**
+ * Try to find a file. If it is not found, then show and error
+ * @param path The path to look for the file
+ * @returns The {@link Response}
+ */
+async function findFile(path: string): Promise<Response> {
+	var file: Response
+	if (path.startsWith("/")) {
+		if (deploymentPath) file = await fetch(location.origin + "/sunrise-sunset.org" + path)
+		else file = await fetch(location.origin + path)
+	} else {
+		file = await fetch(path)
+	}
+	if (!file.ok) article.innerHTML = `<p>Woah! That shouldn't happen.</p><p>Please open an issue <a href='https://github.com/Space-yg/sunrise-sunset.org/issues'>here</a> to fix this problem.</p><p>Problem: File <code>${path.startsWith("./") ? location.origin + location.pathname.split("/").slice(0, -1).join("/").replace(path.slice(1).split("/").slice(0, -1).join("/"), "") + path.slice(1) : path}</code> does not exist.</p>`
+	return file
+}
 
 /**
  * Event when clicking a link that is the same as the location's href
@@ -278,6 +277,19 @@ function checkNextDetails(details: HTMLDetailsElement) {
 }
 
 /**
+ * Convert relative path to absolute path
+ * @param path The relative path to convert
+ * @returns An absolute path of the relative path
+ */
+function relativeToAbsolute(path: string): string {
+	if (path.startsWith("../")) {
+		const count = [...path.matchAll(/\.\.\//g)].length
+		return location.pathname.split("/").slice(0, -count - 1).join("/") + path.slice(count * 3 - 1)
+	} else if (path.startsWith("./")) return location.pathname.split("/").slice(0, -1).join("/") + path.slice(1)
+	return path
+}
+
+/**
  * Fixes anchor and image links
  * @param searchIn The element to search for anchor links in
  */
@@ -288,7 +300,7 @@ function fixLinks(searchIn: Document | HTMLElement) {
 		if (href.startsWith("http") || href.startsWith("#")) continue
 
 		if (deploymentPath) {
-			if (href.startsWith("./")) a.setAttribute("href", location.pathname.split("/").slice(0, -1).join("/") + href.slice(1))
+			if (href.startsWith("./") || href.startsWith("../")) a.setAttribute("href", relativeToAbsolute(href))
 			else a.setAttribute("href", "/sunrise-sunset.org" + href)
 		}
 	}
